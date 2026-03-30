@@ -2,13 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\State;
+namespace App\State\User;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
 use App\ApiResource\RegisterUser;
 use App\Domain\User\UserRegistrar;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 final readonly class UserRegistrationProcessor implements ProcessorInterface
 {
@@ -17,7 +16,7 @@ final readonly class UserRegistrationProcessor implements ProcessorInterface
         private UserRegistrar $userRegistrar
     ){}
 
-    public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = [])
+    public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): void
     {
         if (!$data instanceof RegisterUser) {
             return;

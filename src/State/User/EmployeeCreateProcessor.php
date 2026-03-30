@@ -2,12 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\State;
+namespace App\State\User;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
 use App\ApiResource\CreateEmployee;
-use App\Entity\Company;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;

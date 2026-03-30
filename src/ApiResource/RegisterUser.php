@@ -6,9 +6,8 @@ namespace App\ApiResource;
 
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Post;
-use App\State\UserRegistrationProcessor;
+use App\State\User\UserRegistrationProcessor;
 use Symfony\Component\Validator\Constraints as Assert;
-
 
 
 #[ApiResource(

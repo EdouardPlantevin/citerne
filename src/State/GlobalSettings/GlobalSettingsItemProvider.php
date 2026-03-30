@@ -2,19 +2,22 @@
 
 declare(strict_types=1);
 
-namespace App\State;
+namespace App\State\GlobalSettings;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
+use App\ApiResource\RegisterUser;
+use App\Entity\Company;
 use App\Entity\User;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-final readonly class CompanyItemProvider implements ProviderInterface
+final readonly class GlobalSettingsItemProvider implements ProviderInterface
 {
+
     public function __construct(
-        private Security $security,
+        private readonly Security $security,
     ){}
 
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
@@ -23,16 +26,21 @@ final readonly class CompanyItemProvider implements ProviderInterface
         $user = $this->security->getUser();
 
         if (!$user instanceof User) {
-            throw new AccessDeniedHttpException('Vous devez être connecté.');
+            throw new AccessDeniedHttpException('Vous devez être connecté');
         }
 
         $company = $user->getCompany();
 
-
         if (null === $company) {
-            throw new NotFoundHttpException('Aucune société n\'a été trouvée pour cet utilisateur.');
+            throw new NotFoundHttpException('Vous n\'êtes rattaché à aucune société');
         }
 
-        return $company;
+        $globalSettings = $company->getGlobalSettings();
+
+        if (null === $globalSettings) {
+            throw new NotFoundHttpException('Aucun réglage global n\'a encore été configuré pour votre entreprise');
+        }
+
+        return $globalSettings;
     }
 }
