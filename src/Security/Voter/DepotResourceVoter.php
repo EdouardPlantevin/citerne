@@ -12,12 +12,13 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 final class DepotResourceVoter extends Voter
 {
 
-    public const EDIT = 'COMPANY_DEPOT_EDIT';
-    public const DELETE = 'COMPANY_DEPOT_DELETE';
+    public const VIEW = 'DEPOT_RESOURCE_VIEW';
+    public const EDIT = 'DEPOT_RESOURCE_EDIT';
+    public const DELETE = 'DEPOT_RESOURCE_DELETE';
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        return in_array($attribute, [self::EDIT, self::DELETE], true)
+        return in_array($attribute, [self::EDIT, self::DELETE, self::VIEW], true)
             && $subject instanceof DepotAwareInterface;
     }
 

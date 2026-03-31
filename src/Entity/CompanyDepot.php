@@ -38,11 +38,11 @@ use Symfony\Component\Serializer\Attribute\Groups;
             processor: CompanyDepotProcessor::class
         ),
         new Patch(
-            security: "is_granted('" . CompanyDepotVoter::EDIT . "')",
+            security: "is_granted('" . CompanyDepotVoter::EDIT . "', object)",
             securityMessage: "Ce dépot ne vous appartient pas.",
         ),
         new Delete(
-            security: "is_granted('" . CompanyDepotVoter::DELETE . "')",
+            security: "is_granted('" . CompanyDepotVoter::DELETE . "', object)",
             securityMessage: "Vous ne pouvez pas spprimer un dépôt d'une autre société"
         )
     ],
