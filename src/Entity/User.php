@@ -49,6 +49,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?Company $company = null;
 
     #[ORM\ManyToOne(inversedBy: 'users')]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
     private ?CompanyDepot $companyDepot = null;
 
     public function getId(): ?int

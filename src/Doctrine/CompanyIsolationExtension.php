@@ -9,6 +9,7 @@ use ApiPlatform\Doctrine\Orm\Extension\QueryItemExtensionInterface;
 use ApiPlatform\Doctrine\Orm\Util\QueryNameGeneratorInterface;
 use ApiPlatform\Metadata\Operation;
 use App\Entity\Driver;
+use App\Entity\Interface\DepotAwareInterface;
 use App\Entity\User;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -35,7 +36,7 @@ final readonly class CompanyIsolationExtension implements QueryCollectionExtensi
     private function addWhere(QueryBuilder $queryBuilder, string $resourceClass): void
     {
 
-        if (Driver::class !== $resourceClass) {
+        if (!is_a($resourceClass, DepotAwareInterface::class, true)) {
             return;
         }
 
@@ -47,7 +48,7 @@ final readonly class CompanyIsolationExtension implements QueryCollectionExtensi
 
         $rootAlias = $queryBuilder->getRootAliases()[0];
 
-        if (in_array(User::ROLE_COMPANY_ADMIN, $user->getRoles(), true)) {
+        if ($this->security->isGranted(User::ROLE_COMPANY_ADMIN)) {
             // Logique ROLE_COMPANY_ADMIN
             $company = $user->getCompany();
 

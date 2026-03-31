@@ -6,11 +6,18 @@ namespace App\Security\Voter;
 
 use App\Entity\Interface\DepotAwareInterface;
 use App\Entity\User;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 final class DepotResourceVoter extends Voter
 {
+
+    public function __construct(
+        private Security $security,
+    )
+    {
+    }
 
     public const VIEW = 'DEPOT_RESOURCE_VIEW';
     public const EDIT = 'DEPOT_RESOURCE_EDIT';
@@ -38,7 +45,7 @@ final class DepotResourceVoter extends Voter
             return false;
         }
 
-        if (in_array(User::ROLE_COMPANY_ADMIN, $user->getRoles(), true)) {
+        if ($this->security->isGranted(User::ROLE_COMPANY_ADMIN)) {
             // SCENARIO: ROLE_COMPANY_ADMIN
             return $user->getCompany() === $resourceDepot->getCompany();
         } else {

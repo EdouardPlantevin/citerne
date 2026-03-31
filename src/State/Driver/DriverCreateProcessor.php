@@ -35,7 +35,7 @@ final readonly class DriverCreateProcessor implements ProcessorInterface
             throw new AccessDeniedHttpException('Non authentifié');
         }
 
-        if (in_array(User::ROLE_COMPANY_ADMIN, $user->getRoles(), true)) {
+        if ($this->security->isGranted(User::ROLE_COMPANY_ADMIN)) {
             //Rôle ROLE_COMPANY_ADMIN
             $chosenDepot = $data->getCompanyDepot();
 

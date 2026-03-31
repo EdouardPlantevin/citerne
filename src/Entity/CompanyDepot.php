@@ -85,7 +85,7 @@ class CompanyDepot
     /**
      * @var Collection<int, Driver>
      */
-    #[ORM\OneToMany(targetEntity: Driver::class, mappedBy: 'companyDepot')]
+    #[ORM\OneToMany(targetEntity: Driver::class, mappedBy: 'companyDepot', cascade: ['remove'], orphanRemoval: true)]
     private Collection $drivers;
 
     public function __construct()
