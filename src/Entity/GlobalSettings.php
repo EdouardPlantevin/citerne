@@ -15,6 +15,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ApiResource(
+    shortName: 'GlobalSettings',
+    description: 'Gestion des variables globales de l\'entreprise',
     operations: [
         new Get(
             uriTemplate: 'global_settings',

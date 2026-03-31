@@ -31,16 +31,15 @@ final readonly class CompanyCreateProcessor implements ProcessorInterface
             throw new AccessDeniedHttpException('Utilisateur non authentifié.');
         }
 
-        $company = $this->persistProcessor->process($data, $operation, $uriVariables, $context);
-
-        try {
-            $user->setCompany($company);
-            $this->manager->flush();
-        } catch (\Throwable $exception) {
-            throw new BadRequestHttpException('Une erreur est survenue lors du processus.', $exception);
+        if ($user->getCompany()) {
+            throw new BadRequestHttpException('Vous avez déjà une société');
         }
 
-        return $company;
+        $company = $this->persistProcessor->process($data, $operation, $uriVariables, $context);
 
+        $user->setCompany($company);
+        $this->manager->flush();
+
+        return $company;
     }
 }

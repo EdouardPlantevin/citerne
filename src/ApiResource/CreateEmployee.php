@@ -38,5 +38,8 @@ final class CreateEmployee
 
         #[Assert\NotBlank]
         public string $phone,
+
+        #[Assert\NotBlank]
+        public int $companyDepotId,
     ){}
 }

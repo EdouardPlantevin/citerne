@@ -49,9 +49,16 @@ class Company
     #[ORM\OneToOne(mappedBy: 'company', cascade: ['persist', 'remove'])]
     private ?GlobalSettings $globalSettings = null;
 
+    /**
+     * @var Collection<int, CompanyDepot>
+     */
+    #[ORM\OneToMany(targetEntity: CompanyDepot::class, mappedBy: 'company')]
+    private Collection $companyDepots;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
+        $this->companyDepots = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -117,6 +124,36 @@ class Company
         }
 
         $this->globalSettings = $globalSettings;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CompanyDepot>
+     */
+    public function getCompanyDepots(): Collection
+    {
+        return $this->companyDepots;
+    }
+
+    public function addCompanyDepot(CompanyDepot $companyDepot): static
+    {
+        if (!$this->companyDepots->contains($companyDepot)) {
+            $this->companyDepots->add($companyDepot);
+            $companyDepot->setCompany($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCompanyDepot(CompanyDepot $companyDepot): static
+    {
+        if ($this->companyDepots->removeElement($companyDepot)) {
+            // set the owning side to null (unless already changed)
+            if ($companyDepot->getCompany() === $this) {
+                $companyDepot->setCompany(null);
+            }
+        }
 
         return $this;
     }
