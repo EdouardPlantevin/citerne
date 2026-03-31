@@ -32,6 +32,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
             uriTemplate: '/company_depots/me',
             provider: CompanyDepotItemProvider::class
         ),
+        new Get(),
         new Post(
             security: "is_granted('" . User::ROLE_COMPANY_ADMIN . "')",
             processor: CompanyDepotProcessor::class
@@ -81,9 +82,16 @@ class CompanyDepot
     #[ORM\OneToMany(targetEntity: User::class, mappedBy: 'companyDepot')]
     private Collection $users;
 
+    /**
+     * @var Collection<int, Driver>
+     */
+    #[ORM\OneToMany(targetEntity: Driver::class, mappedBy: 'companyDepot')]
+    private Collection $drivers;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
+        $this->drivers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -175,6 +183,36 @@ class CompanyDepot
             // set the owning side to null (unless already changed)
             if ($user->getCompanyDepot() === $this) {
                 $user->setCompanyDepot(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Driver>
+     */
+    public function getDrivers(): Collection
+    {
+        return $this->drivers;
+    }
+
+    public function addDriver(Driver $driver): static
+    {
+        if (!$this->drivers->contains($driver)) {
+            $this->drivers->add($driver);
+            $driver->setCompanyDepot($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDriver(Driver $driver): static
+    {
+        if ($this->drivers->removeElement($driver)) {
+            // set the owning side to null (unless already changed)
+            if ($driver->getCompanyDepot() === $this) {
+                $driver->setCompanyDepot(null);
             }
         }
 
