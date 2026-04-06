@@ -8,7 +8,6 @@ use ApiPlatform\Doctrine\Orm\Extension\QueryCollectionExtensionInterface;
 use ApiPlatform\Doctrine\Orm\Extension\QueryItemExtensionInterface;
 use ApiPlatform\Doctrine\Orm\Util\QueryNameGeneratorInterface;
 use ApiPlatform\Metadata\Operation;
-use App\Entity\Driver;
 use App\Entity\Interface\DepotAwareInterface;
 use App\Entity\User;
 use Doctrine\ORM\QueryBuilder;
@@ -52,6 +51,11 @@ final readonly class CompanyIsolationExtension implements QueryCollectionExtensi
             // Logique ROLE_COMPANY_ADMIN
             $company = $user->getCompany();
 
+            if ($company === null) {
+                $queryBuilder->andWhere('1 = 0');
+                return;
+            }
+
             $queryBuilder->join(sprintf('%s.companyDepot', $rootAlias), 'cd')
                         ->andWhere('cd.company = :company')
                         ->setParameter('company', $company);
@@ -59,6 +63,11 @@ final readonly class CompanyIsolationExtension implements QueryCollectionExtensi
         } else {
             // Logique ROLE_USER
             $myCompanyDepot = $user->getCompanyDepot();
+
+            if ($myCompanyDepot === null) {
+                $queryBuilder->andWhere('1 = 0');
+                return;
+            }
 
             $queryBuilder->andWhere(sprintf('%s.companyDepot = :depot', $rootAlias))
                         ->setParameter('depot', $myCompanyDepot);

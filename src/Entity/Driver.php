@@ -25,7 +25,9 @@ use Doctrine\ORM\Mapping as ORM;
         new Post(
             processor: DriverCreateProcessor::class
         ),
-        new GetCollection(),
+        new GetCollection(
+            security: "is_granted('IS_AUTHENTICATED_FULLY')",
+        ),
         new Patch(
             security: "is_granted('" . DepotResourceVoter::EDIT . "', object)",
             securityMessage: "Vous n'avez pas les droits",

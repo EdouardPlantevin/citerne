@@ -6,6 +6,7 @@ namespace App\Security\Voter;
 
 use App\Entity\CompanyDepot;
 use App\Entity\User;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
@@ -14,6 +15,11 @@ class CompanyDepotVoter extends Voter
 
     public const EDIT = 'COMPANY_DEPOT_EDIT';
     public const DELETE = 'COMPANY_DEPOT_DELETE';
+
+    public function __construct(
+        private Security $security,
+    ) {
+    }
 
     protected function supports(string $attribute, mixed $subject): bool
     {
@@ -33,8 +39,18 @@ class CompanyDepotVoter extends Voter
         /** @var CompanyDepot $depot */
         $depot = $subject;
 
-        return in_array(User::ROLE_COMPANY_ADMIN, $user->getRoles())
-            && $user->getCompany() === $depot->getCompany();
+        if (!$this->security->isGranted(User::ROLE_COMPANY_ADMIN)) {
+            return false;
+        }
+
+        $userCompany = $user->getCompany();
+        $depotCompany = $depot->getCompany();
+
+        if ($userCompany === null || $depotCompany === null) {
+            return false;
+        }
+
+        return $userCompany === $depotCompany;
 
     }
 }

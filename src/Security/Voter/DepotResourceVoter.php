@@ -47,7 +47,14 @@ final class DepotResourceVoter extends Voter
 
         if ($this->security->isGranted(User::ROLE_COMPANY_ADMIN)) {
             // SCENARIO: ROLE_COMPANY_ADMIN
-            return $user->getCompany() === $resourceDepot->getCompany();
+            $userCompany = $user->getCompany();
+            $resourceCompany = $resourceDepot->getCompany();
+
+            if ($userCompany === null || $resourceCompany === null) {
+                return false;
+            }
+
+            return $userCompany === $resourceCompany;
         } else {
             // SCENARIO: ROLE_USER
             $userDepot = $user->getCompanyDepot();
